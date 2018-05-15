@@ -90,10 +90,14 @@ def postData():
 
         if session.get(username):
             newRecord=Record(username,distance,duration,averagespeed,pathline,startpoint,endpoint,date)
-            db.session.add(newRecord)
-            db.session.commit()
-            print('用户 {} 添加一条记录'.format(username))
-            return jsonify({'msg': '同步记录成功！', 'state': 'success'})
+            try:
+                db.session.add(newRecord)
+                db.session.commit()
+                print('用户 {} 添加一条记录'.format(username))
+                return jsonify({'msg': '同步记录成功！', 'state': 'success'})
+            except :
+                db.session.rollback()
+                return jsonify({'msg': 'sql 执行错误！', 'state': 'fail'})
         else:
             return jsonify({'msg': '用户未登录！', 'state': 'fail'})
 

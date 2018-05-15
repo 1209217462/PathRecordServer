@@ -22,16 +22,23 @@ create table user (
 
 show tables;
 
+
+DELIMITER $
+
 create trigger add_record after insert
 on record for each row
 begin
   update user set recordnum = user.recordnum + 1 where username = new.username;
-end;
+end$
 
 create trigger delete_record after delete
 on record for each row
 begin
   update user set recordnum = user.recordnum - 1 where username = old.username;
-end;
+end$
+
+DELIMITER ;
 
 SHOW TRIGGERS;
+
+

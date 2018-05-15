@@ -1,7 +1,7 @@
 import redis
 
 # app.run()
-localhost ='localhost'
+host='localhost'
 host='0.0.0.0'
 prot='5001'
 

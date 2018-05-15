@@ -31,4 +31,4 @@ app.register_blueprint(view,url_prefix='/')
 
 
 if __name__ == '__main__':
-    app.run(localhost,port=prot)
+    app.run(host,port=prot)
