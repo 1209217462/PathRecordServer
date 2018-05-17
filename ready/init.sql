@@ -17,6 +17,7 @@ create table user (
   id integer NOT NULL AUTO_INCREMENT,
   username varchar(255) not null,
   password varchar(255) not null,
+  isAdmin BOOLEAN DEFAULT FALSE ,
   recordnum INTEGER NOT NULL  DEFAULT 0,
   primary key (id));
 
