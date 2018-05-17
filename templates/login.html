@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui.form小例子</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
+    <script src="/static/layui/layui.js"></script>
+
+    <style type="text/css" rel="stylesheet">
+        .wrap {
+            margin: 0 auto;
+            width: 400px;
+        }
+
+        .wrap2 {
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body onload="load()">
+
+
+<div class="wrap">
+    <form class="layui-form" action="/web/login" method="post"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <input id="input_name" type="text" name="username" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <input id="input_pass" type="password" name="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn layui-btn-danger ">登录</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<input id="msg" type="hidden" value="{{ msg }}">
+
+
+<script>
+    layui.use('form', function () {
+        var form = layui.form;
+
+        //各种基于事件的操作，下面会有进一步介绍
+    });
+
+
+    function load() {
+        console.log('do def  onload');
+        layui.use('layer', function () {
+            console.log('start layer');
+
+            let layer = layui.layer;
+            let msg = document.getElementById('msg').getAttribute('value');
+            if (msg.length > 1) {
+                layer.msg(msg);
+            }
+        });
+        document.getElementById('input_name').setAttribute('value','');
+        document.getElementById('input_pass').setAttribute('value','');
+
+    }
+
+</script>
+
+</body>
+</html>
