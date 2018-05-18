@@ -96,12 +96,13 @@
             elem: '#userList',
             url: baseUrl + 'webapi/users',//数据接口
             limits: [8, 16, 32, 128],
+            cellMinWidth:80,
             page: true, //开启分页
             cols: [[ //表头
-                {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left'},
-                {field: 'username', title: '用户名', width: 80},
-                {field:'recordNum',title:'轨迹数量',width:100},
-                {toolbar:'#bar' , fixed:'right' ,width:200,align:'center'}
+                {field: 'id', title: 'ID', sort: true, fixed: 'left'},
+                {field: 'username', title: '用户名', },
+                {field:'recordNum',title:'轨迹数量'},
+                {toolbar:'#bar' , fixed:'right' ,align:'center'}
             ]]
         });
 
