@@ -1,10 +1,161 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>recordList</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>轨迹列表</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
+    <script src="/static/layui/layui.js"></script>
 </head>
-<body>
+
+<body class="layui-layout-body" onload="onload()">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">layui 后台布局</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="">控制台</a></li>
+            <li class="layui-nav-item"><a href="">商品管理</a></li>
+            <li class="layui-nav-item"><a href="">用户</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">其它系统</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">邮件管理</a></dd>
+                    <dd><a href="">消息管理</a></dd>
+                    <dd><a href="">授权管理</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    贤心
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">退了</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a class="" href="javascript:;">所有商品</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">列表一</a></dd>
+                        <dd><a href="javascript:;">列表二</a></dd>
+                        <dd><a href="javascript:;">列表三</a></dd>
+                        <dd><a href="">超链接</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item">
+                    <a href="javascript:;">解决方案</a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">列表一</a></dd>
+                        <dd><a href="javascript:;">列表二</a></dd>
+                        <dd><a href="">超链接</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a href="">云市场</a></li>
+                <li class="layui-nav-item"><a href="">发布商品</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 15px;">
+        {#            内容主体区域#}
+
+            <table id="recordList" lay-filter="table"></table>
+
+        </div>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
+    </div>
+</div>
+
+<input type="hidden" id="adminName" value="{{ admin }}">
+<input type="hidden" id="userName" value="{{ username }}">
+
+<script>
+    layui.use('table', function () {
+        let $=layui.$;
+        let table = layui.table;
+        let baseUrl = 'http://localhost:5001/';
+        let username=document.getElementById('userName').getAttribute('value');
+
+        //填充table
+        table.render({
+            elem: '#recordList',
+            url: baseUrl + 'webapi/recordByUser/'+username,//数据接口
+            limits: [8, 16, 32, 128],
+            page: true, //开启分页,
+            cellMinWidth:80,
+            cols: [[ //表头
+                {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left'},
+                {field: 'start', title: '起点'},
+                {field: 'end', title: '终点', width: 80},
+                {field: 'distance', title: '路程', sort:true},
+                {field: 'duration', title: '时长', sort:true},
+                {field: 'averageSpeed', title: '平均速度', sort:true},
+                {toolbar:'#bar' , title:'可选操作', fixed:'right' ,width:200,align:'center'}
+            ]]
+        });
+
+        //处理工具条的点击
+        table.on('tool(table)',function (obj) {
+            let data = obj.data; //获得当前行数据
+            let layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            let tr = obj.tr; //获得当前行 tr 的DOM对象
+            //点击详情按钮
+            if (layEvent==='detail'){
+
+            }//点击删除按钮
+            else if (layEvent==='del'){
+                layer.confirm('确定删除该用户？', function(index){
+                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                layer.close(index);
+                //向服务端发送删除指令
+                    let url=baseUrl+'webapi/deleteRecord/'+data.id;
+                    $.get(url,function (res) {
+                        console.log(res);
+                        showMsg('res: '+res.msg);
+                    });
+                });
+            }
+        });
+    });
+
+    function showMsg(msg) {
+        layui.use('layer', function () {
+            let layer = layui.layer;
+            layer.msg(msg);
+        });
+    }
+
+    function onload() {
+        layui.use('layer', function () {
+            let layer = layui.layer;
+            layer.msg('成功载入页面');
+        });
+    }
+</script>
+
+<script type="text/html" id="bar">
+  <a class="layui-btn layui-btn-xs" lay-event="detail">查看详情</a>
+{#  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>#}
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除用户</a>
+</script>
 
 </body>
 </html>

@@ -64,9 +64,11 @@ def addUser():
         return jsonify({'msg':'用户名已经被注册！','state':'fail'})
 
 
+
     newUser=User(req_username,req_password)
     db.session.add(newUser)
     db.session.commit()
+    db.session.close()
 
     print('添加用户{}'.format(req_username))
     # 直接登录
@@ -93,6 +95,7 @@ def postData():
             try:
                 db.session.add(newRecord)
                 db.session.commit()
+                db.session.close()
                 print('用户 {} 添加一条记录'.format(username))
                 return jsonify({'msg': '同步记录成功！', 'state': 'success'})
             except :
@@ -100,4 +103,3 @@ def postData():
                 return jsonify({'msg': 'sql 执行错误！', 'state': 'fail'})
         else:
             return jsonify({'msg': '用户未登录！', 'state': 'fail'})
-

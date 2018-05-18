@@ -1,8 +1,8 @@
 import redis
 
 # app.run()
-# host='localhost'
-host='0.0.0.0'
+host='localhost'
+# host='0.0.0.0'
 prot='5001'
 
 # 数据库
