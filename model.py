@@ -1,7 +1,8 @@
 # from flask_sqlalchemy import SQLAlchemy
 # from flask_login import UserMixin
-from app import database
+from init import database
 db=database
+
 
 class Record(db.Model):
     __tablename__ = 'record'
