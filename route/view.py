@@ -63,9 +63,9 @@ def returnUsers():
         msg='用户列表'
 
         res=makeRes(code,msg,count,data)
-
         return jsonify(res);
 
+# 根据用户名获取轨迹列表
 @view.route('/webapi/recordByUser/<string:username>', methods=['GET'])
 def returnRecord(username):
     if request.method=='GET':
@@ -77,7 +77,7 @@ def returnRecord(username):
 
         data=[]
         for record in recordList:
-            new={'id':record.id,'start':record.startpoint,'end':record.endpoint,'distance':record.distance,'duration':record.duration,'averageSpeed':record.averagespeed}
+            new={'id':record.id,'date':record.date,'start':record.startpoint,'end':record.endpoint,'distance':record.distance,'duration':record.duration,'averageSpeed':record.averagespeed}
             data.append(new)
 
         code='0'
