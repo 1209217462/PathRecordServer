@@ -1,4 +1,5 @@
 from flask import Blueprint,render_template, request,jsonify
+from  datetime import datetime
 
 from model import User,Record,db
 from config import session
@@ -110,8 +111,10 @@ def returnRecord(username):
 
         data=[]
         for record in recordList:
-            new={'id':record.id,'date':record.date,'start':record.startpoint,'end':record.endpoint,'distance':record.distance,'duration':record.duration,'averageSpeed':record.averagespeed}
+            date= datetime.strptime(record.date,'%a, %d %b %Y %H:%M:%S GMT')
+            new={'id':record.id,'date':date,'start':record.startpoint,'end':record.endpoint,'distance':record.distance,'duration':record.duration,'averageSpeed':record.averagespeed}
             data.append(new)
+
 
         code='0'
         count=db.session.query(Record.id).filter(Record.username==username).count()

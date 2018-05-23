@@ -115,5 +115,5 @@ def getPathLineByID(id):
         start=record.startpoint
         end=record.endpoint
 
-        recordData={'id':id,'lines':lines,'start':start,'end':end}
+        recordData={'id':id,'start':start,'end':end,'lines':lines,}
         return jsonify({'msg':'','record':recordData,'state':'success'})
