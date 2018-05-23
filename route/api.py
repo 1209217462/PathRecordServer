@@ -7,23 +7,23 @@ from config import session
 api=Blueprint('api',__name__)
 
 
-@api.before_request
-def  before_req():
-    url=request.url
-    words=url.split('/')
-    word=words[len(words)-1]
-    if word=='login':
-        print('收到登录请求 ')
-    elif  word=='addUser':
-        print('收到注册请求')
-    else:
-        username=request.form.get('username')
-        if session.exists(username):
-            print('session包含用户 {}'.format(username))
-        else:
-            print('未登录')
-            return jsonify({'message': u'需要登录后访问 或 无此页面'})
-
+# @api.before_request
+# def  before_req():
+#     url=request.url
+#     words=url.split('/')
+#     word=words[len(words)-1]
+#     if word=='login':
+#         print('收到登录请求 ')
+#     elif  word=='addUser':
+#         print('收到注册请求')
+#     else:
+#         username=request.form.get('username')
+#         if session.exists(username):
+#             print('session包含用户 {}'.format(username))
+#         else:
+#             print('未登录')
+#             return jsonify({'message': u'需要登录后访问 或 无此页面'})
+#
 
 
 # 登录验证
@@ -64,7 +64,6 @@ def addUser():
         return jsonify({'msg':'用户名已经被注册！','state':'fail'})
 
 
-
     newUser=User(req_username,req_password)
     db.session.add(newUser)
     db.session.commit()
@@ -103,3 +102,18 @@ def postData():
                 return jsonify({'msg': 'sql 执行错误！', 'state': 'fail'})
         else:
             return jsonify({'msg': '用户未登录！', 'state': 'fail'})
+
+# 返回轨迹的详细信息,用于安卓端回放轨迹
+@api.route('/getPathlineByID/<int:id>',methods=['GET'])
+def getPathLineByID(id):
+    if request.method=='GET':
+
+        record = Record.query.filter_by(id=id).first()
+
+        id=record.id
+        lines=record.pathline
+        start=record.startpoint
+        end=record.endpoint
+
+        recordData={'id':id,'lines':lines,'start':start,'end':end}
+        return jsonify({'msg':'','record':recordData,'state':'success'})
