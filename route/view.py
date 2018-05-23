@@ -39,6 +39,38 @@ def showRecordList(username):
         return render_template('recordList.html',admin=admin,username=username)
 
 
+#返回显示轨迹的页面
+@view.route('/web/showRecordDetail/<int:id>',methods=['GET'])
+def showRecordDetail(id):
+    if request.method=='GET':
+
+        admin = session.get('admin')
+        username=request.args.get('username')
+
+        record = Record.query.filter_by(id=id).first()
+
+        id=record.id
+        lines=record.pathline
+        start=record.startpoint
+        end=record.endpoint
+
+        Longitudes = []
+        Latitudes = []
+
+        pointsStr = lines.split(';')
+        result = ''
+
+        for pointStr in pointsStr:
+            point = pointStr.split(',')
+            result=result+'['+point[1]+','+point[0]+'],'
+
+        result=result[:-1] #去掉最后一个 逗号
+
+        return render_template('recordDetail.html',admin=admin,username=username,points=result)
+
+
+
+
 
 @view.route('/webapi/users', methods=['GET'])
 def returnUsers():
@@ -64,6 +96,7 @@ def returnUsers():
 
         res=makeRes(code,msg,count,data)
         return jsonify(res);
+
 
 # 根据用户名获取轨迹列表
 @view.route('/webapi/recordByUser/<string:username>', methods=['GET'])

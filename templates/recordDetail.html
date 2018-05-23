@@ -3,9 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Main</title>
+    <title>轨迹列表</title>
     <link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
     <script src="/static/layui/layui.js"></script>
+    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
+    <script src="http://webapi.amap.com/maps?v=1.4.6&key=828ca135e2775196c1fe355bfbade948&plugin=AMap.PolyEditor"></script>
+    <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+
 </head>
 
 <body class="layui-layout-body" onload="onload()">
@@ -13,19 +17,6 @@
     <div class="layui-header">
         <div class="layui-logo">layui 后台布局</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
-        <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a href="">控制台</a></li>
-            <li class="layui-nav-item"><a href="">商品管理</a></li>
-            <li class="layui-nav-item"><a href="">用户</a></li>
-            <li class="layui-nav-item">
-                <a href="javascript:;">其它系统</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="">邮件管理</a></dd>
-                    <dd><a href="">消息管理</a></dd>
-                    <dd><a href="">授权管理</a></dd>
-                </dl>
-            </li>
-        </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <a href="javascript:;">
@@ -72,8 +63,8 @@
         <!-- 内容主体区域 -->
         <div style="padding: 15px;">
         {#            内容主体区域#}
-
-            <table id="userList" lay-filter="table"></table>
+            {#            地图#}
+            <div id="container"></div>
 
         </div>
     </div>
@@ -85,68 +76,41 @@
 </div>
 
 <input type="hidden" id="adminName" value="{{ admin }}">
+<input type="hidden" id="userName" value="{{ username }}">
+
 
 <script>
-    layui.use('table', function () {
-        let $=layui.$;
-        let table = layui.table;
-        let baseUrl = 'http://localhost:5001/';
-        //填充table
-        table.render({
-            elem: '#userList',
-            url: baseUrl + 'webapi/users',//数据接口
-            limits: [8, 16, 32, 128],
-            cellMinWidth:80,
-            page: true, //开启分页
-            cols: [[ //表头
-                {field: 'id', title: 'ID', sort: true, fixed: 'left'},
-                {field: 'username', title: '用户名', },
-                {field:'recordNum',title:'轨迹数量'},
-                {toolbar:'#bar' , fixed:'right' ,align:'center'}
-            ]]
-        });
-
-        //处理工具条的点击
-        table.on('tool(table)',function (obj) {
-            let data = obj.data; //获得当前行数据
-            let layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-            let tr = obj.tr; //获得当前行 tr 的DOM对象
-            //点击详情按钮
-            if (layEvent==='detail'){
-                let url=baseUrl+'web/showRecordList/'+data.username;
-                layer.msg(url);
-                //进行跳转
-                window.location.href=url;
-
-            }//点击删除按钮
-            else if (layEvent==='del'){
-                layer.confirm('确定删除该用户？', function(index){
-                obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
-                layer.close(index);
-                //向服务端发送删除指令
-                    let url=baseUrl+'webapi/deleteUser/'+data.id;
-                    $.get(url,function (res) {
-                        console.log(res);
-                        showMsg('res: '+res.msg);
-                    });
-                });
-            }
-        });
+    var editorTool, map = new AMap.Map("container", {
+        resizeEnable: true,
+        // center: [116.403322, 39.900255],//地图中心点
+        zoom: 13 //地图显示的缩放级别
     });
+    //在地图上绘制折线
+    var editor={};
+    editor._line=(function(){
+        var lineArr = [{{ points }}];
+        return new AMap.Polyline({
+            map: map,
+            path: lineArr,
+            strokeColor: "#5350ff",//线颜色
+            strokeOpacity: 1,//线透明度
+            strokeWeight: 3,//线宽
+            strokeStyle: "solid"//线样式
+        });
+    })();
 
+    map.setFitView();
+    //editor._lineEditor= new AMap.PolyEditor(map, editor._line);
 
+</script>
+
+<script>
     function onload() {
         layui.use('layer', function () {
             let layer = layui.layer;
             layer.msg('成功载入页面');
         });
     }
-</script>
-
-<script type="text/html" id="bar">
-  <a class="layui-btn layui-btn-xs" lay-event="detail">查看详情</a>
-{#  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>#}
-  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除用户</a>
 </script>
 
 </body>

@@ -119,6 +119,11 @@
             let tr = obj.tr; //获得当前行 tr 的DOM对象
             //点击详情按钮
             if (layEvent==='detail'){
+                let username=document.getElementById('userName').getAttribute('value');
+                let url=baseUrl+'web/showRecordDetail/'+data.id+'?username='+username;
+                layer.msg(url);
+                //进行跳转
+                window.location.href=url;
 
             }//点击删除按钮
             else if (layEvent==='del'){
